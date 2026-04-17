@@ -1,0 +1,406 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>امتحان خصائص التفكير - قيس جازي</title>
+    
+    <!-- خطوط أكاديمية للطباعة -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* إعدادات صفحة الامتحان (A4 Paper Style) */
+        body {
+            background-color: #e2e8f0;
+            font-family: 'Amiri', serif;
+            color: #111;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .exam-paper {
+            background-color: #fff;
+            width: 100%;
+            max-width: 21cm;
+            min-height: 29.7cm;
+            padding: 2.5cm 2cm;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            box-sizing: border-box;
+            position: relative;
+            /* إطار رسمي مزدوج يحاكي الأوراق الامتحانية */
+            border: 2px solid #000;
+            outline: 1px solid #000;
+            outline-offset: -8px;
+            overflow: hidden;
+        }
+
+        /* العلامة المائية للجامعة */
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 7rem;
+            color: rgba(0, 0, 0, 0.03);
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 0;
+            font-weight: bold;
+            user-select: none;
+        }
+
+        /* الترويسة */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+            border-bottom: 2px solid #000;
+            padding-bottom: 15px;
+        }
+        .header h1, .header h2, .header h3 {
+            margin: 5px 0;
+            font-weight: 700;
+        }
+        .header h1 { font-size: 1.4rem; }
+        .header h2 { font-size: 1.2rem; }
+        .header h3 { font-size: 1.1rem; }
+
+        /* تفاصيل الامتحان */
+        .exam-info {
+            text-align: center;
+            font-size: 1.05rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* جدول العلامات الرسمي */
+        .grading-table {
+            width: 60%;
+            margin: 0 auto 25px auto;
+            border-collapse: collapse;
+            font-weight: bold;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            font-size: 1.1rem;
+        }
+        .grading-table th, .grading-table td {
+            border: 2px solid #000;
+            padding: 6px;
+        }
+        .grading-table th {
+            background-color: #f4f4f4;
+        }
+        .grading-table td {
+            height: 45px;
+            color: #555;
+            vertical-align: bottom;
+            padding-bottom: 5px;
+        }
+
+        /* بيانات الطالب */
+        .student-details {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            font-size: 1.15rem;
+            font-weight: bold;
+            gap: 15px;
+            position: relative;
+            z-index: 1;
+            background-color: #fcfcfc;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .input-line {
+            display: inline-flex;
+            align-items: flex-end;
+            white-space: nowrap;
+        }
+        .input-line span {
+            margin-left: 5px;
+        }
+        .input-line input {
+            border: none;
+            border-bottom: 1px dashed #000;
+            background: transparent;
+            font-family: 'Amiri', serif;
+            font-size: 1.1rem;
+            font-weight: bold;
+            outline: none;
+            width: 160px;
+            text-align: center;
+        }
+
+        /* التعليمات */
+        .instructions {
+            text-align: justify;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            position: relative;
+            z-index: 1;
+            background-color: #f0f0f0;
+            padding: 10px 15px;
+            border-right: 4px solid #000;
+        }
+
+        /* تنسيق الأسئلة */
+        .question-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .paragraph-text {
+            font-size: 1.3rem;
+            line-height: 2.2;
+            text-align: justify;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* الكلمات الإنجليزية داخل النص */
+        .eng-word {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 1.1rem;
+            direction: ltr;
+            display: inline-block;
+            margin: 0 4px;
+        }
+
+        /* صندوق الإجابة */
+        .answer-box-container {
+            border: 2px solid #000;
+            padding: 15px;
+            background-color: transparent;
+            position: relative;
+            z-index: 1;
+        }
+        .answer-box {
+            width: 100%;
+            min-height: 180px;
+            border: none;
+            background: transparent;
+            font-family: 'Amiri', serif;
+            font-size: 1.2rem;
+            line-height: 2.2;
+            resize: vertical;
+            outline: none;
+        }
+
+        /* أسئلة ضع دائرة */
+        .mcq-item {
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 1;
+        }
+        .mcq-question {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .mcq-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-right: 20px;
+        }
+        .mcq-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+        .mcq-option input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        /* تذييل الورقة */
+        .footer {
+            text-align: center; 
+            margin-top: 50px; 
+            font-weight: bold; 
+            font-size: 1.2rem;
+            position: relative;
+            z-index: 1;
+            border-top: 2px dashed #000;
+            padding-top: 15px;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 0; background-color: #fff; }
+            .exam-paper { box-shadow: none; padding: 15px; border: none; outline: none; }
+            .student-details { flex-direction: column; }
+            .input-line input { width: 100%; }
+            .grading-table { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="exam-paper">
+        
+        <!-- العلامة المائية -->
+        <div class="watermark">جَامِعَةُ إِرْبِد الأَهْلِيَّة</div>
+
+        <!-- الترويسة الأكاديمية -->
+        <div class="header">
+            <h1>جَامِعَةُ إِرْبِد الأَهْلِيَّة - كُلِّيَّةُ الآدَابِ وَالْفُنُونِ - قِسْمُ مُتَطَلَّبَاتِ الْجَامِعَةِ</h1>
+            <h2>مَسَاقُ: مَهَارَاتِ التَّفْكِيرِ النَّاقِدِ وَحَلِّ الْمُشْكِلَاتِ</h2>
+            <h3>مُدَرِّسُ الْمَسَاقِ: أ. قَيْس جَازِي</h3>
+        </div>
+
+        <!-- تفاصيل وقت الامتحان -->
+        <div class="exam-info">
+            الشُّعْبَةُ رَقْم: (1)، قَاعَةُ: B305، السَّاعَةُ: 10:00 - 11:30 صَبَاحاً<br>
+            الامْتِحَانُ النِّصْفِيُّ، الْفَصْلُ الدِّرَاسِيُّ الأَوَّلُ 2025-2026، الْيَوْمُ وَالتَّارِيخُ: الأَحَد 19/4/2026
+        </div>
+
+        <!-- جدول العلامات الخاص بالمصحح -->
+        <table class="grading-table">
+            <tr>
+                <th>السُّؤَالُ الأَوَّل</th>
+                <th>السُّؤَالُ الثَّانِي</th>
+                <th>الْمَجْمُوعُ النِّهَائِيُّ</th>
+            </tr>
+            <tr>
+                <td>/ 15</td>
+                <td>/ 10</td>
+                <td>/ 25</td>
+            </tr>
+        </table>
+
+        <!-- بيانات الطالب -->
+        <div class="student-details">
+            <div class="input-line">
+                <span>الِاسْمُ الرُّبَاعِيُّ:</span>
+                <input type="text" placeholder=".............................">
+            </div>
+            <div class="input-line">
+                <span>الرَّقْمُ الْجَامِعِيُّ:</span>
+                <input type="text" placeholder=".............................">
+            </div>
+            <div class="input-line">
+                <span>الرَّقْمُ التَّسَلْسُلِيُّ:</span>
+                <input type="text" style="width: 80px;">
+            </div>
+        </div>
+
+        <!-- التعليمات -->
+        <div class="instructions">
+            مُلَاحَظَة: أَرْجُو مِنْ أَبْنَائِي وَبَنَاتِي الطَّلَبَةِ الأَعِزَّاءِ الإِجَابَةَ عَنِ الأَسْئِلَةِ الآتِيَةِ، وَعَدَدُهَا سُؤَالَانِ (2)، (مِنَ الْعَلَامَةِ الْكُلِّيَّةِ 25). نَمُوذَجُ الإِجَابَةِ: (نَمُوذَج A).
+        </div>
+
+        <!-- السؤال الأول: تحليل الفقرة -->
+        <div class="question-title">السُّؤَالُ الأَوَّلُ: (15 عَلَامَة) - التَّحْلِيلُ وَالِاسْتِنْتَاجُ.</div>
+        
+        <div class="paragraph-text">
+            يَتَمَيَّزُ التَّفْكِيرُ بِعِدَّةِ خَصَائِصَ تَجْعَلُهُ عَمَلِيَّةً مُعَقَّدَةً وَمُرْتَبِطَةً بِالْوَاقِعِ الْمُعَاشِ. أَوَّلُ هَذِهِ الْخَصَائِصِ هِيَ الْهَدَفِيَّةُ الْغَائِيَّةُ <span class="eng-word">Teleological Purpose</span>، فَالإِنْسَانُ لَا يُفَكِّرُ فِي فَرَاغٍ، بَلْ يَسْعَى دَائِماً لِتَحْقِيقِ غَايَةٍ مُحَدَّدَةٍ كَحَلِّ مُشْكِلَةٍ أَوْ فَهْمِ ظَاهِرَةٍ. كَمَا يَتَّسِمُ التَّفْكِيرُ بِالنِّسْبِيَّةِ <span class="eng-word">Relativity</span>، إِذْ تَخْتَلِفُ طُرُقُ التَّفْكِيرِ وَنَتَائِجُهُ مِنْ شَخْصٍ لآخَرَ بِنَاءً عَلَى خَلْفِيَّاتِهِمْ وَتَجَارِبِهِمْ. وَلِأَنَّ الإِنْسَانَ كَائِنٌ يَنْمُو وَيَتَغَيَّرُ، فَإِنَّ التَّفْكِيرَ يَمْتَلِكُ خَاصِّيَّةَ التَّطَوُّرِيَّةِ النَّمَائِيَّةِ <span class="eng-word">Developmental Evolution</span>، حَيْثُ تَرْتَقِي الْقُدْرَاتُ الْعَقْلِيَّةُ مَعَ تَقَدُّمِ الْعُمْرِ وَاكْتِسَابِ الْخِبْرَاتِ. عِلَاوَةً عَلَى ذَلِكَ، يَتَّخِذُ التَّفْكِيرُ صِفَةَ تَعَدُّدِيَّةِ الأَشْكَالِ <span class="eng-word">Polymorphism</span>، مُتَنَوِّعاً بَيْنَ الاسْتِنْبَاطِيِّ، وَالاسْتِقْرَائِيِّ، وَالإِبْدَاعِيِّ. وَأَخِيراً، لَا يُمْكِنُ فَصْلُ التَّفْكِيرِ عَنْ مُحِيطِهِ؛ فَهْوَ عَمَلِيَّةٌ ذَاتُ تَفَاعُلِيَّةٍ بِيئِيَّةٍ <span class="eng-word">Environmental Interactivity</span> تُؤَثِّرُ فِيهَا الْمُتَغَيِّرَاتُ الثَّقَافِيَّةُ وَالاجْتِمَاعِيَّةُ.
+        </div>
+
+        <p style="font-weight: bold; font-size: 1.1rem; margin-bottom: 10px;">بِنَاءً عَلَى الْفِقْرَةِ السَّابِقَةِ، حَلِّلْ خَصَائِصَ التَّفْكِيرِ الْخَمْسَةَ الْمَذْكُورَةَ، وَكَيْفَ تَتَدَاخَلُ لِتَشْكِيلِ عَمَلِيَّةٍ عَقْلِيَّةٍ مُتَكَامِلَةٍ، مَعَ الشَّرْحِ فِي الصُّنْدُوقِ التَّالِي:</p>
+        
+        <!-- صندوق الإجابة المفتوح -->
+        <div class="answer-box-container">
+            <textarea class="answer-box" spellcheck="false">
+أولاً: 
+
+ثانياً: 
+
+ثالثاً: 
+
+رابعاً: 
+            </textarea>
+        </div>
+
+        <!-- السؤال الثاني: ضع دائرة -->
+        <div class="question-title">السُّؤَالُ الثَّانِي: (10 عَلَامَات) - اخْتَرِ الإِجَابَةَ الصَّحِيحَةَ فِيمَا يَلِي (ضَعْ دَائِرَةً):</div>
+
+        <!-- السؤال 1 -->
+        <div class="mcq-item">
+            <div class="mcq-question">1. مَا الْمَعْنَى الإِنْجِلِيزِيُّ الصَّحِيح لِمُصْطَلَحِ "تَفْكِير نَاقِد"؟</div>
+            <div class="mcq-options">
+                <label class="mcq-option"><input type="radio" name="q1"> أ) Creative Thinking</label>
+                <label class="mcq-option"><input type="radio" name="q1"> ب) Critical Thinking</label>
+                <label class="mcq-option"><input type="radio" name="q1"> ج) Logical Thinking</label>
+                <label class="mcq-option"><input type="radio" name="q1"> د) Scientific Thinking</label>
+            </div>
+        </div>
+
+        <!-- السؤال 2 -->
+        <div class="mcq-item">
+            <div class="mcq-question">2. حَسَبَ الْفِقْرَةِ، يُقْصَدُ بِـ "الْهَدَفِيَّةِ الْغَائِيَّةِ" لِلتَّفْكِيرِ أَنَّ الإِنْسَانَ:</div>
+            <div class="mcq-options">
+                <label class="mcq-option"><input type="radio" name="q2"> أ) يُفَكِّرُ بِشَكْلٍ عَشْوَائِيٍّ دُونَ دَافِعٍ.</label>
+                <label class="mcq-option"><input type="radio" name="q2"> ب) يَقُومُ بِالتَّفْكِيرِ لِمُجَرَّدِ قَضَاءِ الْوَقْتِ.</label>
+                <label class="mcq-option"><input type="radio" name="q2"> ج) يَسْعَى دَائِماً لِتَحْقِيقِ غَايَةٍ مُحَدَّدَةٍ كَحَلِّ مُشْكِلَةٍ.</label>
+                <label class="mcq-option"><input type="radio" name="q2"> د) يَعْتَمِدُ عَلَى الآخَرِينَ فِي تَحْدِيدِ أَهْدَافِهِ.</label>
+            </div>
+        </div>
+
+        <!-- السؤال 3 -->
+        <div class="mcq-item">
+            <div class="mcq-question">3. أَيُّ الْخَصَائِصِ التَّالِيَةِ تُفَسِّرُ اخْتِلَافَ طُرُقِ التَّفْكِيرِ وَنَتَائِجِهِ مِنْ شَخْصٍ لآخَرَ؟</div>
+            <div class="mcq-options">
+                <label class="mcq-option"><input type="radio" name="q3"> أ) التَّطَوُّرِيَّةُ النَّمَائِيَّةُ.</label>
+                <label class="mcq-option"><input type="radio" name="q3"> ب) النِّسْبِيَّةُ.</label>
+                <label class="mcq-option"><input type="radio" name="q3"> ج) الْهَدَفِيَّةُ الْغَائِيَّةُ.</label>
+                <label class="mcq-option"><input type="radio" name="q3"> د) تَعَدُّدِيَّةُ الأَشْكَالِ.</label>
+            </div>
+        </div>
+
+        <!-- السؤال 4 -->
+        <div class="mcq-item">
+            <div class="mcq-question">4. "تَرْتَقِي الْقُدْرَاتُ الْعَقْلِيَّةُ مَعَ تَقَدُّمِ الْعُمْرِ وَاكْتِسَابِ الْخِبْرَاتِ". إِلَى أَيِّ خَاصِّيَّةٍ يُشِيرُ هَذَا الْقَوْلُ؟</div>
+            <div class="mcq-options">
+                <label class="mcq-option"><input type="radio" name="q4"> أ) التَّفَاعُلِيَّةُ الْبِيئِيَّةُ.</label>
+                <label class="mcq-option"><input type="radio" name="q4"> ب) تَعَدُّدِيَّةُ الأَشْكَالِ.</label>
+                <label class="mcq-option"><input type="radio" name="q4"> ج) النِّسْبِيَّةُ.</label>
+                <label class="mcq-option"><input type="radio" name="q4"> د) التَّطَوُّرِيَّةُ النَّمَائِيَّةُ.</label>
+            </div>
+        </div>
+
+        <!-- السؤال 5 -->
+        <div class="mcq-item">
+            <div class="mcq-question">5. "تَعَدُّدِيَّةُ الأَشْكَالِ" فِي التَّفْكِيرِ تَعْنِي كَوْنَهُ:</div>
+            <div class="mcq-options">
+                <label class="mcq-option"><input type="radio" name="q5"> أ) مُرْتَبِطاً فَقَطْ بِالْبِيئَةِ الثَّقَافِيَّةِ.</label>
+                <label class="mcq-option"><input type="radio" name="q5"> ب) مُتَنَوِّعاً بَيْنَ الاسْتِنْبَاطِيِّ، وَالاسْتِقْرَائِيِّ، وَالإِبْدَاعِيِّ.</label>
+                <label class="mcq-option"><input type="radio" name="q5"> ج) ثَابِتاً لَا يَتَغَيَّرُ مَعَ مُرُورِ الزَّمَنِ.</label>
+                <label class="mcq-option"><input type="radio" name="q5"> د) هَادِفاً دَائِماً لِحَلِّ الْمُشْكِلَاتِ فَقَطْ.</label>
+            </div>
+        </div>
+
+        <div class="footer">
+            انْتَهَتِ الأَسْئِلَةُ .. مَعَ أَطْيَبِ التَّمَنِّيَاتِ بِالتَّوْفِيقِ وَالنَّجَاحِ
+        </div>
+
+    </div>
+
+</body>
+</html>
+
+
+```
